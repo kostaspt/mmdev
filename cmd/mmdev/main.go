@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"mmdev/internal/cmd/root"
+	"mmdev/internal/config"
 )
 
 func main() {
@@ -15,6 +16,17 @@ func main() {
 }
 
 func run() error {
-	rootCmd := root.NewCmd()
+	cfg, err := config.New()
+	if err != nil {
+		return err
+	}
+	defer func(cfg *config.Config) {
+		if dErr := cfg.Save(); dErr != nil {
+			fmt.Fprintln(os.Stderr, dErr)
+		}
+	}(cfg)
+
+	rootCmd := root.NewCmd(cfg)
+
 	return rootCmd.Execute()
 }

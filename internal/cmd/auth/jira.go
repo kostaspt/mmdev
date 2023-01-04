@@ -27,13 +27,13 @@ func NewJiraCmd(cfg *config.Config) *cobra.Command {
 func (r *JiraRunner) Run(cmd *cobra.Command, args []string) error {
 	scanner := bufio.NewScanner(os.Stdin)
 
-	fmt.Print("Enter your username: ")
+	fmt.Print("Enter your company email: ")
 	scanner.Scan()
-	r.config.Auth.Jira.Username = scanner.Text()
+	r.config.Auth.Jira.Email = scanner.Text()
 
 	fmt.Print("Enter your API token: ")
 	scanner.Scan()
-	r.config.Auth.Jira.ApiToken = scanner.Text()
+	r.config.Auth.Jira.APIToken = scanner.Text()
 
 	return nil
 }

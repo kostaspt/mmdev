@@ -12,10 +12,10 @@ import (
 type Config struct {
 	Auth struct {
 		Jira struct {
-			Username string `json:"username"`
-			ApiToken string `json:"api_token"`
-		} `json:"jira"`
-	} `json:"auth"`
+			Email    string
+			APIToken string
+		}
+	}
 }
 
 func New() (*Config, error) {

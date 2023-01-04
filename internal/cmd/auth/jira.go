@@ -10,39 +10,30 @@ import (
 	"mmdev/internal/config"
 )
 
-type JiraCmdOpts struct {
-	config   *config.Config
-	Username string
-	ApiToken string
+type JiraRunner struct {
+	config *config.Config
 }
 
 func NewJiraCmd(cfg *config.Config) *cobra.Command {
-	opts := &JiraCmdOpts{
-		config: cfg,
-	}
-
+	r := &JiraRunner{cfg}
 	cmd := &cobra.Command{
-		Use: "jira",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			scanner := bufio.NewScanner(os.Stdin)
-
-			fmt.Print("Enter your username: ")
-			scanner.Scan()
-			opts.Username = scanner.Text()
-
-			fmt.Print("Enter your API token: ")
-			scanner.Scan()
-			opts.ApiToken = scanner.Text()
-
-			return runJira(opts)
-		},
+		Use:  "jira",
+		RunE: r.Run,
 	}
 
 	return cmd
 }
 
-func runJira(opts *JiraCmdOpts) error {
-	opts.config.Auth.Jira.Username = opts.Username
-	opts.config.Auth.Jira.ApiToken = opts.ApiToken
+func (r *JiraRunner) Run(cmd *cobra.Command, args []string) error {
+	scanner := bufio.NewScanner(os.Stdin)
+
+	fmt.Print("Enter your username: ")
+	scanner.Scan()
+	r.config.Auth.Jira.Username = scanner.Text()
+
+	fmt.Print("Enter your API token: ")
+	scanner.Scan()
+	r.config.Auth.Jira.ApiToken = scanner.Text()
+
 	return nil
 }

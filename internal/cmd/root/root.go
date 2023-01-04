@@ -12,7 +12,7 @@ func NewCmd(cfg *config.Config) *cobra.Command {
 		Use: "mmdev <command>",
 	}
 
-	cmd.AddCommand(auth.NewCmd(cfg))
+	cmd.AddCommand(auth.NewAuthRootCmd(cfg))
 
 	return cmd
 }

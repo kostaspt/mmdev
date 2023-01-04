@@ -1,4 +1,4 @@
-package jira
+package auth
 
 import (
 	"bufio"
@@ -10,14 +10,14 @@ import (
 	"mmdev/internal/config"
 )
 
-type Opts struct {
+type JiraCmdOpts struct {
 	config   *config.Config
 	Username string
 	ApiToken string
 }
 
-func NewCmd(cfg *config.Config) *cobra.Command {
-	opts := &Opts{
+func NewJiraCmd(cfg *config.Config) *cobra.Command {
+	opts := &JiraCmdOpts{
 		config: cfg,
 	}
 
@@ -34,14 +34,14 @@ func NewCmd(cfg *config.Config) *cobra.Command {
 			scanner.Scan()
 			opts.ApiToken = scanner.Text()
 
-			return run(opts)
+			return runJira(opts)
 		},
 	}
 
 	return cmd
 }
 
-func run(opts *Opts) error {
+func runJira(opts *JiraCmdOpts) error {
 	opts.config.Auth.Jira.Username = opts.Username
 	opts.config.Auth.Jira.ApiToken = opts.ApiToken
 	return nil

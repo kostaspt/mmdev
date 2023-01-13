@@ -11,6 +11,7 @@ func NewJiraRootCmd(cfg *config.Config) *cobra.Command {
 		Use: "jira <command>",
 	}
 
+	cmd.AddCommand(NewBranchCmd(cfg))
 	cmd.AddCommand(NewMeCmd(cfg))
 
 	return cmd

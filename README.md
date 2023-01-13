@@ -10,3 +10,4 @@
 
 ### Jira
 - `mmdev jira me` - Get your name from Jira account.
+- `mmdev jira branch <ticket url or key>` - Generate branch name from a Jira ticket and create branch.

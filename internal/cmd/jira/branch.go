@@ -48,9 +48,19 @@ func (r *BranchRunner) Run(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	bn := fmt.Sprintf("%s-%s", i.Key, r.sanitizeTitle(i.Fields.Summary))
+	securityField, err := i.Fields.Unknowns.StringMap("security")
+	if err != nil {
+		securityField = map[string]string{}
+	}
 
-	osCmd := exec.Command("git", "switch", "-c", bn)
+	var branchName string
+	if securityName, ok := securityField["name"]; ok && securityName == "Internal" {
+		branchName = i.Key
+	} else {
+		branchName = fmt.Sprintf("%s-%s", i.Key, r.sanitizeTitle(i.Fields.Summary))
+	}
+
+	osCmd := exec.Command("git", "switch", "-c", branchName)
 	if err = osCmd.Run(); err != nil {
 		return err
 	}

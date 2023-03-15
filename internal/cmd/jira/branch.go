@@ -60,7 +60,18 @@ func (r *BranchRunner) Run(cmd *cobra.Command, args []string) error {
 		branchName = fmt.Sprintf("%s-%s", i.Key, r.sanitizeTitle(i.Fields.Summary))
 	}
 
-	osCmd := exec.Command("git", "switch", "-c", branchName)
+	isExistingBranch, err := hasBranch(branchName)
+	if err != nil {
+		return err
+	}
+
+	var osCmd *exec.Cmd
+	if isExistingBranch {
+		osCmd = exec.Command("git", "switch", branchName)
+	} else {
+		osCmd = exec.Command("git", "switch", "-c", branchName)
+	}
+
 	if err = osCmd.Run(); err != nil {
 		return err
 	}
@@ -111,4 +122,17 @@ func (r *BranchRunner) sanitizeTitle(title string) string {
 	}
 
 	return res
+}
+
+func hasBranch(name string) (bool, error) {
+	osCmd := exec.Command("git", "rev-parse", "--verify", name)
+	output, err := osCmd.CombinedOutput()
+	if err != nil {
+		if strings.Contains(string(output), "fatal: Needed a single revision") {
+			return false, nil
+		}
+		return false, fmt.Errorf("failed to run git rev-parse --verify: %w", err)
+	}
+
+	return true, nil
 }
